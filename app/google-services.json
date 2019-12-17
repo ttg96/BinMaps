@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "538297459094",
+    "firebase_url": "https://bin-maps-48694.firebaseio.com",
+    "project_id": "bin-maps-48694",
+    "storage_bucket": "bin-maps-48694.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538297459094:android:214168d9d67f28cdfb7db7",
+        "android_client_info": {
+          "package_name": "com.costa.binmaps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538297459094-64rucvpftt4vssbcncbeubp25vbsd2lh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6-5v283A7ZlSc8kOTuijGnze3uS5OPOs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538297459094-64rucvpftt4vssbcncbeubp25vbsd2lh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
