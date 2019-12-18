@@ -4,6 +4,7 @@ import android.media.Image;
 
 public class FirebaseMarker {
 
+    public String name;
     public String type;
     public double latitude;
     public double longitude;
@@ -13,10 +14,19 @@ public class FirebaseMarker {
     public FirebaseMarker() {
     }
 
-    public FirebaseMarker(String type, double latitude, double longitude) {
+    public FirebaseMarker(String name, String type, double latitude, double longitude) {
+        this.name = name;
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {
