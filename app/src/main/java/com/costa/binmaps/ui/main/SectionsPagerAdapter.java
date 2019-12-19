@@ -1,6 +1,7 @@
 package com.costa.binmaps.ui.main;
 
 import android.content.Context;
+import android.location.Location;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
