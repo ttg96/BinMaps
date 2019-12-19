@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -21,7 +22,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.costa.binmaps.LocationData;
 import com.costa.binmaps.R;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -34,13 +37,11 @@ public class AddBinFragment extends Fragment {
     EditText mEdit;
     Button submit, clear;
 
-    LocationManager locationManager;
-    LocationListener locationListener;
-    Location currentLocation;
+    LocationData currentLocation;
 
 
-    public AddBinFragment() {
-        // Required empty public constructor
+    public AddBinFragment(LocationData locData) {
+        currentLocation = locData;
     }
 
     @Override
@@ -77,54 +78,6 @@ public class AddBinFragment extends Fragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
 
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q &&
-                ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q &&
-                (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 1);
-        } else {
-
-            Location lastKnownLocation;
-
-            // Emulator
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 30, locationListener);
-            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            /*
-            // Phone
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 30, locationListener);
-            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-             */
-
-            if (lastKnownLocation != null) {
-                currentLocation = lastKnownLocation ;
-            }
-        }
-
         return view;
     }
 
@@ -133,8 +86,10 @@ public class AddBinFragment extends Fragment {
         String type = dropdown.getSelectedItem().toString();
         String comment = mEdit.getText().toString();
 
+        Location tempLoc = currentLocation.getLocation();
+
         DatabaseReference mProfileRef = FirebaseDatabase.getInstance().getReference("Locations");
-        FirebaseMarker marker = new FirebaseMarker(comment, type, currentLocation.getLatitude(), currentLocation.getLongitude());
+        FirebaseMarker marker = new FirebaseMarker(comment, type, tempLoc.getLatitude(), tempLoc.getLongitude());
         mProfileRef.push().setValue(marker);
         mEdit.getText().clear();
 

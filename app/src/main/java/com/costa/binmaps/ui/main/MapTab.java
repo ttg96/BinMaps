@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.costa.binmaps.LocationData;
 import com.costa.binmaps.MainActivity;
 import com.costa.binmaps.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -54,15 +55,14 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
 
     private DatabaseReference mDatabase;
     ChildEventListener mChildEventListener;
-    Location currentLocation;
+    LocationData currentLocation;
     GoogleMap mMap;
     LocationManager locationManager;
     LocationListener locationListener;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    private static  final int REQUEST_CODE = 101;
 
-    public MapTab() {
+    public MapTab(LocationData locData) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Locations");
+        currentLocation = locData;
     }
 
     @Override
@@ -83,15 +83,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
         return rootView;
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -99,6 +91,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
         mMap.clear();
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -138,10 +131,11 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
             */
             //Emulator
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 30, locationListener);
-            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            currentLocation.setLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+            Location tempLoc = currentLocation.getLocation();
 
             if (currentLocation != null) {
-                LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                LatLng userLocation = new LatLng(tempLoc.getLatitude(), tempLoc.getLongitude());
                 mMap.addMarker(new MarkerOptions()
                         .position(userLocation)
                         .title("Your current location")

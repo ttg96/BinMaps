@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.costa.binmaps.LocationData;
 import com.costa.binmaps.R;
 
 /**
@@ -20,10 +21,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_2};
     private final Context mContext;
+    public LocationData userLocation;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
+        userLocation = new LocationData();
     }
 
     @Override
@@ -33,10 +36,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         switch (position) {
             case 0:
-                MapTab mapTab = new MapTab();
+                MapTab mapTab = new MapTab(userLocation);
                 return mapTab;
             case 1:
-                AddBinFragment addBin = new AddBinFragment();
+                AddBinFragment addBin = new AddBinFragment(userLocation);
                 return addBin;
             default:
                 return  null;
