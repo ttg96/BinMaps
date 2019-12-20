@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,60 +152,78 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "blue");
+                        break;
                     case "Yellow (Plastic, Metal)":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "yellow");
+                        break;
                     case "Green (Glass)":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "greem");
+                        break;
                     case "Black (Indifferent)":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "black");
+                        break;
                     case "Red (Batteries)":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "red");
+                        break;
                     case "Cooking oil":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "oil");
+                        break;
                     case "Organic":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "organic");
+                        break;
                     case "Clothes":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "clothes");
+                        break;
                     case "Appliances":
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "appliances");
+                        break;
                     default:
                         map.addMarker(new MarkerOptions()
                                 .position(location)
                                 .title(type)
-                                .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .snippet(comment));
+                        break;
 
                 }
             }
@@ -241,45 +260,44 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
             case "Blue (Paper)":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result = BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Yellow (Plastic, Metal)":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Green (Glass)":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Black (Indifferent)":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.waste_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Red (Batteries)":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.battery_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Cooking oil":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.oil_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Organic":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.organic_waste_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Clothes":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.clothes_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Appliances":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.appliance_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result =  BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             default:
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                result = BitmapDescriptorFactory.fromBitmap(smallMarker);
+                return BitmapDescriptorFactory.fromBitmap(smallMarker);
         }
-        return result;
     }
 
 }
