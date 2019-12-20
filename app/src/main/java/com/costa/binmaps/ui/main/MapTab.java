@@ -56,6 +56,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
     private DatabaseReference mDatabase;
     ChildEventListener mChildEventListener;
     LocationData currentLocation;
+    Marker currentLocMarker;
     GoogleMap mMap;
     LocationManager locationManager;
     LocationListener locationListener;
@@ -96,6 +97,8 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
             @Override
             public void onLocationChanged(Location location) {
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.clear();
+                addMarkersToMap(mMap);
                 mMap.addMarker(new MarkerOptions()
                         .position(userLocation)
                         .title("Your current location")
@@ -120,8 +123,6 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
 
             }
         };
-
-        addMarkersToMap(mMap);
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // Phone
