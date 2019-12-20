@@ -3,10 +3,11 @@
     <string name="tab_text_1">Map Tab</string>
     <string name="tab_text_2">Add Bin</string>
     <string name="map_key">AIzaSyDElw4nHXCNfRv42wR6fSxAEBd6VcQnPTw</string>
-    <string name="title">Add a new bin to your current location</string>
+    <string name="title">Add a new bin to your current location (login is required)</string>
     <string name="commentText">Write a comment about bin (optional):</string>
     <string name="comment">Comment</string>
     <string name="type">Choose the type of bin:</string>
     <string name="submit">Add Bin</string>
     <string name="cancel">Clear</string>
+    <string name="signOut">Sign Out</string>
 </resources>
