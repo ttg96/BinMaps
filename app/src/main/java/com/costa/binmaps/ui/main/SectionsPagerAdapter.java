@@ -29,6 +29,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         userLocation = new LocationData();
     }
 
+    //Load the tabs
     @Override
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
@@ -47,12 +48,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         }
     }
 
+    //Get the tab title
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
         return mContext.getResources().getString(TAB_TITLES[position]);
     }
 
+    //Total amount of tabs to show
     @Override
     public int getCount() {
         // Show 2 total pages.

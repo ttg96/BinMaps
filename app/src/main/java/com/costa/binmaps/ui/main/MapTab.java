@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
@@ -41,12 +42,18 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 public class MapTab extends Fragment implements OnMapReadyCallback {
 
+    //Database values
     private DatabaseReference mDatabase;
+
+    //Map values
     ChildEventListener mChildEventListener;
     LocationData currentLocation;
     GoogleMap mMap;
     LocationManager locationManager;
     LocationListener locationListener;
+
+    //Markers
+    BitmapDescriptor recyclingMarker, wasteMarker, batteryMarker, organicMarker, oilMarker, clothesMarker, applianceMarker;
 
     public MapTab(LocationData locData) {
         mDatabase = FirebaseDatabase.getInstance().getReference("Locations");
@@ -64,6 +71,8 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
+        setupMarkerIcon();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
@@ -72,6 +81,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
     }
 
 
+    //Update the map and player location
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -83,6 +93,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                currentLocation.setLocation(location);
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.clear();
                 addMarkersToMap(mMap);
@@ -112,28 +123,30 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
         };
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Phone
-            /*
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 30, locationListener);
-            currentLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            */
-            //Emulator
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 30, locationListener);
-            currentLocation.setLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+            if(isEmulator()){
+                //Emulator
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 30, locationListener);
+                currentLocation.setLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+            } else {
+                //Phone
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 30, locationListener);
+                currentLocation.setLocation(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
+            }
             Location tempLoc = currentLocation.getLocation();
 
-            if (currentLocation != null) {
+            if (tempLoc!= null) {
                 LatLng userLocation = new LatLng(tempLoc.getLatitude(), tempLoc.getLongitude());
                 mMap.addMarker(new MarkerOptions()
                         .position(userLocation)
                         .title("Your current location")
-                        .snippet("Please work")
+                        .snippet("User")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
             }
         }
     }
 
+    //Add custom markers to map
     private void addMarkersToMap(final GoogleMap map){
 
         mChildEventListener = mDatabase.addChildEventListener(new ChildEventListener() {
@@ -151,7 +164,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(recyclingMarker));
                         Log.d("Report", "blue");
                         break;
                     case "Yellow (Plastic, Metal)":
@@ -159,7 +172,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(recyclingMarker));
                         Log.d("Report", "yellow");
                         break;
                     case "Green (Glass)":
@@ -167,7 +180,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(recyclingMarker));
                         Log.d("Report", "green");
                         break;
                     case "Triple (Blue, Yellow, Green)":
@@ -175,7 +188,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(recyclingMarker));
                         Log.d("Report", "triple");
                         break;
                     case "Black (Indifferent)":
@@ -183,7 +196,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(wasteMarker));
                         Log.d("Report", "black");
                         break;
                     case "Red (Batteries)":
@@ -191,7 +204,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(batteryMarker));
                         Log.d("Report", "red");
                         break;
                     case "Cooking oil":
@@ -199,7 +212,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(oilMarker));
                         Log.d("Report", "oil");
                         break;
                     case "Organic":
@@ -207,7 +220,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(organicMarker));
                         Log.d("Report", "organic");
                         break;
                     case "Clothes":
@@ -215,7 +228,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(clothesMarker));
                         Log.d("Report", "clothes");
                         break;
                     case "Appliances":
@@ -223,7 +236,7 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .position(location)
                                 .title(type)
                                 .snippet(comment)
-                                .icon(setupMarkerIcon(type)));
+                                .icon(applianceMarker));
                         Log.d("Report", "appliances");
                         break;
                     default:
@@ -258,57 +271,50 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private BitmapDescriptor setupMarkerIcon(String type){
+    //Create bitmap images for markers
+    private void setupMarkerIcon(){
         int height = 128;
         int width = 128;
         Bitmap b, smallMarker;
 
-        switch (type) {
-            case "Blue (Paper)":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Yellow (Plastic, Metal)":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Green (Glass)":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Black (Indifferent)":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.waste_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Triple (Blue, Yellow, Green)":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Red (Batteries)":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.battery_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Cooking oil":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.oil_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Organic":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.organic_waste_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Clothes":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.clothes_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            case "Appliances":
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.appliance_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
-            default:
-                b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
-                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-                return BitmapDescriptorFactory.fromBitmap(smallMarker);
-        }
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
+        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        recyclingMarker = BitmapDescriptorFactory.fromBitmap(smallMarker);
+
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.waste_bin);
+        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        wasteMarker = BitmapDescriptorFactory.fromBitmap(smallMarker);
+
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.battery_bin);
+        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        batteryMarker = BitmapDescriptorFactory.fromBitmap(smallMarker);
+
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.oil_bin);
+        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        oilMarker = BitmapDescriptorFactory.fromBitmap(smallMarker);
+
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.organic_waste_bin);
+        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        organicMarker = BitmapDescriptorFactory.fromBitmap(smallMarker);
+
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.clothes_bin);
+        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        clothesMarker = BitmapDescriptorFactory.fromBitmap(smallMarker);
+
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.appliance_bin);
+        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        applianceMarker = BitmapDescriptorFactory.fromBitmap(smallMarker);
     }
 
+    //Check if user is on emulator or on a phone
+    private boolean isEmulator() {
+        return Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(Build.PRODUCT);
+    }
 }

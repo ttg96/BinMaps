@@ -90,8 +90,6 @@ public class AddBinFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
-
         View view = inflater.inflate(R.layout.fragment_add_bin, container, false);
 
         mEdit = view.findViewById(R.id.comment);
@@ -144,6 +142,7 @@ public class AddBinFragment extends Fragment {
         return view;
     }
 
+    //Send new marker to database
     private void sendToFirebase(View v) {
 
         if(FirebaseAuth.getInstance().getCurrentUser() != null){
@@ -156,13 +155,19 @@ public class AddBinFragment extends Fragment {
             FirebaseMarker marker = new FirebaseMarker(comment, type, tempLoc.getLatitude(), tempLoc.getLongitude());
             mProfileRef.push().setValue(marker);
             mEdit.getText().clear();
+            Snackbar.make(getView(), "Bin added successfully.", Snackbar.LENGTH_SHORT).show();
+        } else {
+            mEdit.getText().clear();
+            Snackbar.make(getView(), "Please login to add bins.", Snackbar.LENGTH_SHORT).show();
         }
     }
 
+    //Clear comment edit text
     private void clearComment(View v){
         mEdit.getText().clear();
     }
 
+    //Update the ui after login anf lod off
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             signInButton.setVisibility(View.GONE);
@@ -173,16 +178,19 @@ public class AddBinFragment extends Fragment {
         }
     }
 
+    //Sign in function
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    //Sign out function
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         updateUI(null);
     }
 
+    //Result of login activity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -199,6 +207,7 @@ public class AddBinFragment extends Fragment {
         }
     }
 
+    //Firebase authentication with google
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
