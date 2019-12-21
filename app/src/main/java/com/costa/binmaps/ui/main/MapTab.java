@@ -168,7 +168,15 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                                 .title(type)
                                 .snippet(comment)
                                 .icon(setupMarkerIcon(type)));
-                        Log.d("Report", "greem");
+                        Log.d("Report", "green");
+                        break;
+                    case "Triple (Blue, Yellow, Green)":
+                        map.addMarker(new MarkerOptions()
+                                .position(location)
+                                .title(type)
+                                .snippet(comment)
+                                .icon(setupMarkerIcon(type)));
+                        Log.d("Report", "triple");
                         break;
                     case "Black (Indifferent)":
                         map.addMarker(new MarkerOptions()
@@ -254,7 +262,6 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
         int height = 128;
         int width = 128;
         Bitmap b, smallMarker;
-        BitmapDescriptor result;
 
         switch (type) {
             case "Blue (Paper)":
@@ -271,6 +278,10 @@ public class MapTab extends Fragment implements OnMapReadyCallback {
                 return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Black (Indifferent)":
                 b = BitmapFactory.decodeResource(getResources(), R.drawable.waste_bin);
+                smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+                return  BitmapDescriptorFactory.fromBitmap(smallMarker);
+            case "Triple (Blue, Yellow, Green)":
+                b = BitmapFactory.decodeResource(getResources(), R.drawable.recycling_bin);
                 smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
                 return  BitmapDescriptorFactory.fromBitmap(smallMarker);
             case "Red (Batteries)":

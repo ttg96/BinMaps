@@ -27,7 +27,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -39,7 +38,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.concurrent.Executor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -133,6 +131,7 @@ public class AddBinFragment extends Fragment {
         String[] items = new String[]{"Blue (Paper)",
                 "Yellow (Plastic, Metal)",
                 "Green (Glass)",
+                "Triple (Blue, Yellow, Green)",
                 "Black (Indifferent)",
                 "Red (Batteries)",
                 "Cooking oil",
@@ -147,17 +146,17 @@ public class AddBinFragment extends Fragment {
 
     private void sendToFirebase(View v) {
 
-        String type = dropdown.getSelectedItem().toString();
-        String comment = mEdit.getText().toString();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            String type = dropdown.getSelectedItem().toString();
+            String comment = mEdit.getText().toString();
 
-        Location tempLoc = currentLocation.getLocation();
+            Location tempLoc = currentLocation.getLocation();
 
-        DatabaseReference mProfileRef = FirebaseDatabase.getInstance().getReference("Locations");
-        FirebaseMarker marker = new FirebaseMarker(comment, type, tempLoc.getLatitude(), tempLoc.getLongitude());
-        mProfileRef.push().setValue(marker);
-        mEdit.getText().clear();
-
-
+            DatabaseReference mProfileRef = FirebaseDatabase.getInstance().getReference("Locations");
+            FirebaseMarker marker = new FirebaseMarker(comment, type, tempLoc.getLatitude(), tempLoc.getLongitude());
+            mProfileRef.push().setValue(marker);
+            mEdit.getText().clear();
+        }
     }
 
     private void clearComment(View v){
@@ -181,6 +180,7 @@ public class AddBinFragment extends Fragment {
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+        updateUI(null);
     }
 
     @Override
@@ -203,8 +203,7 @@ public class AddBinFragment extends Fragment {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener((Executor) this, new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithCredential(credential) .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
